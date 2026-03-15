@@ -1,0 +1,80 @@
+import java.util.*;
+
+class Node {
+    String name;
+    int size; // size in KB (only for files)
+    boolean isFile;
+    List<Node> children;
+
+    // Constructor for file
+    Node(String name, int size) {
+        this.name = name;
+        this.size = size;
+        this.isFile = true;
+        this.children = new ArrayList<>();
+    }
+
+    // Constructor for directory
+    Node(String name) {
+        this.name = name;
+        this.isFile = false;
+        this.children = new ArrayList<>();
+    }
+
+    void add(Node node) {
+        children.add(node);
+    }
+}
+
+public class Main {
+
+    public static int getDirectorySize(Node node) {
+
+        // Base Case
+        if (node.isFile) {
+            return node.size;
+        }
+
+        // Recursive Case
+        int total = 0;
+        for (Node child : node.children) {
+            total += getDirectorySize(child);
+        }
+
+        return total;
+    }
+
+    public static void main(String[] args) {
+
+        // Creating files
+        Node mainJava = new Node("main.java", 100);
+        Node utilsJava = new Node("utils.java", 50);
+        Node readme = new Node("readme.txt", 10);
+        Node setup = new Node("setup.pdf", 200);
+        Node config = new Node("config.xml", 20);
+
+        // Creating directories
+        Node src = new Node("src");
+        Node guides = new Node("guides");
+        Node docs = new Node("docs");
+        Node project = new Node("project");
+
+        // Building directory structure
+        src.add(mainJava);
+        src.add(utilsJava);
+
+        guides.add(setup);
+
+        docs.add(readme);
+        docs.add(guides);
+
+        project.add(src);
+        project.add(docs);
+        project.add(config);
+
+        // Calculate total size
+        int totalSize = getDirectorySize(project);
+
+        System.out.println("Total Directory Size: " + totalSize + " KB");
+    }
+}
