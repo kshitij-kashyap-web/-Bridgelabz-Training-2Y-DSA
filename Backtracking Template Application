@@ -1,0 +1,82 @@
+import java.util.*;
+
+public class Main {
+
+    static int N = 4;
+    static int M = 4;
+
+    static char[][] grid = {
+        {'C','A','T','S'},
+        {'O','R','E','A'},
+        {'D','E','A','M'},
+        {'E','L','L','S'}
+    };
+
+    static boolean[][] visited = new boolean[N][M];
+
+    // 8 directions
+    static int[] dx = {-1,-1,-1,0,0,1,1,1};
+    static int[] dy = {-1,0,1,-1,1,-1,0,1};
+
+    static boolean backtrack(int row, int col, String word, int index) {
+
+        // goal condition
+        if(index == word.length())
+            return true;
+
+        // boundary and constraint checks
+        if(row < 0 || col < 0 || row >= N || col >= M)
+            return false;
+
+        if(visited[row][col])
+            return false;
+
+        if(grid[row][col] != word.charAt(index))
+            return false;
+
+        visited[row][col] = true;
+
+        // explore all 8 directions
+        for(int d = 0; d < 8; d++) {
+            int newRow = row + dx[d];
+            int newCol = col + dy[d];
+
+            if(backtrack(newRow, newCol, word, index + 1))
+                return true;
+        }
+
+        // backtracking step
+        visited[row][col] = false;
+
+        return false;
+    }
+
+    static boolean exist(String word) {
+
+        for(int i = 0; i < N; i++) {
+            for(int j = 0; j < M; j++) {
+
+                if(grid[i][j] == word.charAt(0)) {
+
+                    for(boolean[] row : visited)
+                        Arrays.fill(row, false);
+
+                    if(backtrack(i, j, word, 0))
+                        return true;
+                }
+            }
+        }
+
+        return false;
+    }
+
+    public static void main(String[] args) {
+
+        String word = "DREAM";
+
+        if(exist(word))
+            System.out.println("Word Found");
+        else
+            System.out.println("Word Not Found");
+    }
+}
